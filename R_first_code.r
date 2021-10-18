@@ -13,3 +13,7 @@ fishes <- c(10, 50, 60, 100, 200)
 # a table in R is called data frame 
 
 streams <- data.frame(water, fishes) 
+
+streams
+
+View(streams)
