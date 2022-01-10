@@ -75,13 +75,19 @@ plotRGB(EN, r=1, g=7, b=13, stretch="lin")
 #----- day 2
 
 # importing all the data together with the lapply function
-# first: impost the wd so we can remove "path"      
-      
+# first: impost the wd so we can remove "path"   setwd("C:/Users/franc/Desktop/lab/en")   
+#let's build the list --> find the pattern in common of all the images, part of the name: EN 
+
 rlist <- list.files(pattern="EN")
+
 rlist
+
+# we generate the list, now we can apply the lapply function : which is applying to a list a certain function, in this case the raster funciton
 
 list_rast <- lapply(rlist, raster)
 list_rast
+
+# to put all the file togheter we use the stack funciton 
 
 EN_stack <- stack(list_rast)
 EN_stack
@@ -89,10 +95,12 @@ EN_stack
 cl <- colorRampPalette(c('red','orange','yellow'))(100) # 
 plot(EN_stack, col=cl)
 
-# Exercise plot only the first image of the stack
+# Exercise plot only the first image of the stack --> to plot the first you have to link the single image to the stack trough the dollar symbol
+
 plot(EN_stack$EN_0001, col=cl)
 
-# difference
+# difference between the final image and the first image 
+
 ENdif <- EN_stack$EN_0001 - EN_stack$EN_0013
 cldif <- colorRampPalette(c('blue','white','red'))(100) # 
 plot(ENdif, col=cldif)
