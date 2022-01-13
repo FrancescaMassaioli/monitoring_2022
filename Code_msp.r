@@ -83,8 +83,31 @@ plot(s1, col=cl)
 
 
 ## DAY 2
+# setwd("C:/Users/franc/Desktop/lab")
 
 # function source : read R code from a file 
 source("R_code_source_sdm.r")
+# in the theretical slide of SDMs we shoudl use individuals species and predictors 
+preds
+# temperature, vegetation, precipitation, elevetion
+
+# now we build a model 
+#1. explaining to the saftware the data we are going to use. training data : explaining to the model where the species is or is not. environmental variables are called predictors
+# sdmData creating an a object with sdm 
+datasdm <- sdmData(train=species, predictors=preds)
+
+#sdm function: we make a model to predict if a species is present and how much : sdm(formula, data, methids,...)
+
+#we have occurrence and a predictors in the y and x coordinate. points in space. relationdhip between them. y= bx + a. a is the intercept. b is called slope. 
+# linear model. methods:glms: assumptions, each variable is normally distributed. GAM: Generalized additive models.
+
+m1 <- sdm(Occurrence~temperature+elevation+precipitation+vegetation, data=datasdm, methods="glm")
+
+#we want to see the plot of the models
+
+#the model produces slope and intercept. is the very final application of the formula. now we use the model to make the prediction. for each pixels state what is the probability of presence based on this model. 
+#apply the corrisponding slope to his predictors. 
+
+
 
 
