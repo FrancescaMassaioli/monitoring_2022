@@ -93,7 +93,10 @@ b2014 <- brick(r2014)
 # longitude (lambda) from 0 to 20
 # latitude from 30 to 50
 
-# crop the stack to the extent of Sicily
-ext <- c(11, 26, 38, 54)
+# crop the stack to the extent of Madagascar
+
+ext <- extent(36, 56, -32, -3)
+
+crop2014 <- crop(b2014, ext)
 
 
