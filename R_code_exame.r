@@ -1,5 +1,12 @@
 # I want to analyse
 
+library(ncdf4)
+library(raster)
+library(RStoolbox)
+library(viridis)
+library(ggplot2)
+library(patchwork)
+
 #first let's set the working directory
 
 setwd("C:/Users/franc/Desktop/lab/EXAM")
@@ -73,5 +80,20 @@ ggtitle("DVI 2014")
 # the 2 images one above the other 
 
 p1 / p2
+
+
+#day 2 
+
+
+r2014 <- raster("c_gls_NDVI300_201405010000_GLOBE_PROBAV_V1.0.1.nc")
+
+b2014 <- brick(r2014)
+# you can crop your image on a certain area: you can put the extention you want to crop
+
+# longitude (lambda) from 0 to 20
+# latitude from 30 to 50
+
+# crop the stack to the extent of Sicily
+ext <- c(11, 26, 38, 54)
 
 
