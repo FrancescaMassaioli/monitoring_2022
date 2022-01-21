@@ -298,3 +298,51 @@ p2020 <- ggplot(proportion2020, aes(x=cover, y=prop2020, color=cover)) + geom_ba
 
 grid.arrange(p1999, p2020, nrow=1)
 
+
+# LAI300
+
+rlist <- list.files(pattern="LAI300")
+ext <- extent(41, 52, -28, -10)
+list_rast <- lapply(rlist, raster)
+r2014 <- list_rast[[2]]
+c2014 <- crop(r2014, ext)
+c2014
+
+r2021 <- list_rast[[1]]
+c2021 <- crop(r2021, ext)
+cl <- colorRampPalette(c("blue","light blue","pink","yellow"))(100)
+
+plot(c2014, col=cl)
+dev.off()
+plot(c2021, col=cl)
+
+#ggplot
+
+p1 <- ggplot() + 
+geom_raster(c2014, mapping = aes(x=x, y=y, fill=Leaf.Area.Index.333m)) +
+scale_fill_viridis(option="magma") 
+
+p2 <- ggplot() + 
+geom_raster(c2021, mapping = aes(x=x, y=y, fill=Leaf.Area.Index.333m)) +
+scale_fill_viridis(option="magma") 
+
+#hist function
+
+hist(c2014)
+hist(c2021)
+
+par(mfrow=c(1,2))
+hist(c2014)
+hist(c2021)
+
+# plot one variable on top of the other. abline function: you can choose the intercept and the slope of the line
+plot(c2014, c2021)
+abline(0,1,col="red")
+
+#BURN FIRE
+
+
+
+
+
+
