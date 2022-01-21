@@ -339,9 +339,22 @@ hist(c2021)
 plot(c2014, c2021)
 abline(0,1,col="red")
 
-#BURN FIRE
+#PLOTRGB LAI
+
+rlist <- list.files(pattern="PLOTLAI")
 
 
+list_rast <- lapply(rlist, brick)
+b2014 <- list_rast[[1]]
+ plot(b2014, col=cl)
+cl <- colorRampPalette(c("blue","light blue","pink","black"))(100)
+plot(b2014, col=cl)
+ plotRGB(b2014, r=1, g=2, b=3, stretch="lin")
+
+
+
+b2021 <- list_rast[[2]]
+plotRGB(b2021, r=1, g=2, b=3, stretch="lin")
 
 
 
