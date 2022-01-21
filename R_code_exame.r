@@ -6,10 +6,11 @@ library(RStoolbox)
 library(viridis)
 library(ggplot2)
 library(patchwork)
-
+library(rgdal)
+ 
 #first let's set the working directory
 
-setwd("C:/Users/franc/Desktop/lab/EXAM")
+setwd("C:/Users/franc/Desktop/lab/exam1")
 
 # create a raster file 
 
@@ -196,6 +197,104 @@ plot(dvi2020, col=cl)
 plot(dvidif, col=cld)
 
 
+#unsupervised classification --> to classify what are the forest and what agricultural area. we will use the Rtoolbox to make classification
+# unsuperClass(img, nClasses)
+rlist <- list.files(pattern="albedo")
+list_rast <- lapply(rlist, brick)
+a1999 <- list_rast[[1]]
+plotRGB(a1999, r=2, g=3, b=1, stretch="lin")
+a2020 <- list_rast[[2]]
+plotRGB(a2020, r=2, g=3, b=1, stretch="lin")
 
 
+a1999c <- unsuperClass(a1999, nClasses=2)
+a1999c
+plot(a1999c$map) 
+
+a2020c <- unsuperClass(a2020, nClasses=2)
+a2020c
+plot(a2020c$map)
+
+#frequencies
+freq(a1999c$map)
+
+# value  count
+#[1,]     1 241293
+#[2,]     2  20339
+
+total <- 261632
+propforest <- 241293/total
+propbaresoil <- 20339/total
+
+# propforest 0.922261
+# propbaresoil 0.07773896
+
+#now we are going to build a dataframe 
+
+cover <- c("Forest", "Baresoil")
+prop1999 <- c(0.922261, 0.07773896)
+prop1999 <- c(propforest, propbaresoil)
+#build a dataframe
+proportion1999 <- data.frame(cover, prop1999)
+proportion1999
+
+#      cover   prop1999
+# 1   Forest 0.92226104
+# 2 Baresoil 0.07773896
+
+
+#ggplot
+
+ggplot(proportion1999, aes(x=cover, y=prop1999, color=cover)) + geom_bar(stat="identity", fill="white")
+
+#a2020 proportion
+
+freq(a2020c$map)
+ #value  count
+#[1,]     1  16183
+#[2,]     2 245449
+
+total <- 261632
+propforest <- 16183/total
+propbaresoil <- 245449/total
+
+# forest [1] 0.06185405
+#baresoil [1] 0.9381459
+
+#now we are going to build a dataframe 
+
+cover <- c("Forest", "Baresoil")
+prop2020 <- c(0.06185405, 0.9381459)
+prop2020 <- c(propforest, propbaresoil)
+proportion2020 <- data.frame(cover, prop2020)
+proportion2020 
+
+
+# cover   prop2020
+#1   Forest 0.06185405
+#2 Baresoil 0.93814595
+
+
+#ggplot
+ggplot(proportion2020, aes(x=cover, y=prop2020, color=cover)) + geom_bar(stat="identity", fill="white")
+
+#finale dataframe
+
+finalproportion <- data.frame(cover, prop1999, prop2020)
+
+
+
+
+
+#     cover   prop1999   prop2020
+#1   Forest 0.92226104 0.06185405
+#2 Baresoil 0.07773896 0.93814595
+
+# now we want to plot weverything all togheter -> gridExtra packages -> we are doing multiframe by using this package 
+# 1 let's assign to every ggplot a name
+
+p1999 <- ggplot(proportion1999, aes(x=cover, y=prop1999, color=cover)) + geom_bar(stat="identity", fill="white")
+p2020 <- ggplot(proportion2020, aes(x=cover, y=prop2020, color=cover)) + geom_bar(stat="identity", fill="white")
+
+grid.arrange(p1999, p2020, nrow=1)
 
