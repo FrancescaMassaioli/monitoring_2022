@@ -348,4 +348,3 @@ plot(c2021, col=clf, main="Burnt Area")
 
 
 
-
