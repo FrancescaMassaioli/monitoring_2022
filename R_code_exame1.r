@@ -1,24 +1,25 @@
 # I want to analyse changes in vegetation state in Madagascar
 
 library(ncdf4) 
-library(raster)
-library(RStoolbox)
+library(raster)  #to manage satellite data 
+library(RStoolbox) #classification
 library(viridis)
-library(ggplot2)
+library(ggplot2) # plotting with aestethics
 library(patchwork)
 library(rgdal)
+library(gridExtra) #for grid.arrange plotting, creating a multiframe 
 
 
 #first let's set the working directory
 
 setwd("C:/Users/franc/Desktop/lab/exam")
 
-# import the data from lab folder to R using list.files function. 
+# create the list of files stored in exam folder starting from a pattern using list.files function
 
 import <- list.files(pattern="TOCR")
 import 
 
-# create a raster file (using lapply function to apply a function to a list)
+# create a raster file (using lapply function to apply raster function to the list)
 
 rast_list <- lapply(import, raster)
 rast_list
@@ -62,71 +63,79 @@ list <- list.files(pattern="TOC_")
 list
 # [1] "TOC_1999.jpeg" "TOC_2018.jpeg"
 
-#create a brick raster file to see all the layers
+#create a brick raster file to see all the layers, so we import the complete set of layers togheter
+#we will pass brick("TOC_1999.jpeg") to a new object
 
-b_1999 <- brick("TOC_1999.jpeg")
+list_T <- lapply(list, brick)
 
-b_2018 <- brick("TOC_2018.jpeg")
+#assign simple names
 
-#plotRGB 
+TOC_1999 <- list_T[[1]]
+TOC_2018 <- list_T[[2]]
 
-plotRGB(b_1999, r=1, g=2, b=3, stretch="Lin") 
+
+#plotRGB 1999
+
+plotRGB(TOC_1999, r=1, g=2, b=3, stretch="Lin") 
 
 #for curiosity try also the red band in 
 
-plotRGB(b_1999, r=3, g=2, b=1, stretch="Lin")
+plotRGB(TOC_1999, r=3, g=2, b=1, stretch="Lin")
 
 #red in blue (plotRGB_3)
-plotRGB(b_1999, r=1, g=3, b=2, stretch="Lin")
+plotRGB(TOC_1999, r=1, g=3, b=2, stretch="Lin")
 
 #RGB_4
-plotRGB(b_1999, r=2, g=1, b=3, stretch="Lin")
+plotRGB(TOC_1999, r=2, g=1, b=3, stretch="Lin")
 
 
 
 # 2018
 
-
-plotRGB(b_2018, r=1, g=2, b=3, stretch="Lin") 
-
+plotRGB(TOC_2018, r=1, g=2, b=3, stretch="Lin") 
 
 
-# create a stack file to plot all layers at the same time
-cl <- colorRampPalette(c('darkblue', 'deepskyblue4', 'cyan3', 'pink', 'yellow', 'white'))(100)
+
+# create a stack file to plot all layers at the same time 
+
+cls <- colorRampPalette(c('darkblue', 'deepskyblue4', 'cyan3', 'pink', 'yellow', 'white'))(100)
 
 cls <- colorRampPalette(c('darkblue', 'deepskyblue4', 'cyan3', 'azure2', 'yellow', 'orange', 'chocolate1'))(100)
 
 
-s1999 <- stack(b_1999)
-plot(b_1999, col=cl, main="STACK 1999")
+s1999 <- stack(TOC_1999)
+plot(TOC_1999, col=cl, main="STACK 1999")
 
-s2018 <- stack(b_2018)
-plot(b_2018, col=cl, main="STACK 2018")
+s2018 <- stack(TOC_2018)
+plot(TOC_2018, col=cl, main="STACK 2018")
 
 # calculate energy in 1999
  
-dvi1999 <- s1999$TOC_1999.1 - s1999$TOC_1999.2 / s1999$TOC_1999.1 + s1999$TOC_1999.2
+dvi1999 <- s1999$TOC_1999.1 - s1999$TOC_1999.2 
+cl <- colorRampPalette(c('darkblue','yellow','red','black'))(100)
 CLAI <- colorRampPalette(c("#1E377F","#0055CC","#0A75AD","#81D8D0","#FDD591","#FCA954","#ED7676"))(100)
-plot(dvi1999, col=CLAI, main="NDVI 1999")
+plot(dvi1999, col=cl, main="DVI 1999")
 
-dvi2018 <- s2018$TOC_2018.1 - s2018$TOC_2018.2 / s2018$TOC_2018.1 + s2018$TOC_2018.2
-plot(dvi2018, col=CLAI, main="NDVI 2018")
+dvi2018 <- s2018$TOC_2018.1 - s2018$TOC_2018.2 
+plot(dvi2018, col=cl, main="DVI 2018")
 
 # differencing two images of energy in two different times
 
 dvidif <- dvi1999 - dvi2018     
 
-cld <- colorRampPalette(c('blue','white','red'))(100) or NC <- colorRampPalette(c("chocolate4", "orange", "yellow", "grey", "green", "forestgreen", "darkgreen"))(100)
+cld <- colorRampPalette(c('blue','white','red'))(100) 
 plot(dvidif, col=cld, main="Difference in NDVI between 1999 and 2018")
+
+or NC <- colorRampPalette(c("chocolate4", "orange", "yellow", "grey", "green", "forestgreen", "darkgreen"))(100)
 
 # result: big difference of energy. 
 
 par(mfrow=c(2,2))
-plot(dvi1999, col=CLAI, main="NDVI 1999")
-plot(dvi2018, col=CLAI, main="NDVI 2018")
-plot(dvidif, col=cld, main="Difference in NDVI between 1999 and 2018")
+plot(dvi1999, col=cl, main="DVI 1999")
+plot(dvi2018, col=cl, main="DVI 2018")
+plot(dvidif, col=cld, main="Diff DVI 1999 and 2018")
 
-# see better in a histogram
+# see better how distributions is changing in a histogram
 
 hist(dvidif, col="limegreen", xlab="DVI change", main= "DVI histogram")
 
