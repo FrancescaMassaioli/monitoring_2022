@@ -37,10 +37,9 @@ c2018 <- crop(r2018, ext)
 # plotting the images with a color choice
 
 cl <- colorRampPalette(c('darkblue', 'deepskyblue4', 'cyan3', 'pink', 'yellow', 'gold'))(100)
+plot(c1999, col=cl, main="TOC 1999")
 
-plot_1999 <- plot(c1999, col=cl, main="TOC 1999")
-
-plot_2018 <- plot(c2018, col=cl, main="TOC 2018")
+plot(c2018, col=cl, main="TOC 2018")
 
   
 #ggplot function with viridis
