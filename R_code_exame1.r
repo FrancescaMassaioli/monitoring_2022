@@ -1,10 +1,10 @@
 # multi-temporal analysis in vegetation state in Madagascar 
 
 library(ncdf4) # for uploading and visualizing copernicus data in R
-library(raster)  #to manage satellite data 
-library(RStoolbox) #classification
+library(raster)  #to manage spatial data, read and manipulate them
+library(RStoolbox) #for remote sensing image processing
 library(viridis) #brings to R color scales designed to improve graph readability
-library(ggplot2) # plotting with aestethics
+library(ggplot2) # create graphics and plotting with aestethics
 library(patchwork) #to combine multiple ggplot2 plots in a plot composition
 library(gridExtra) #for grid.arrange plotting, creating a multiframe 
 
@@ -37,6 +37,11 @@ c.2020 <- crop(n.2020, ext)
 # choosing a colorRampPalette and plotting
 NC <- colorRampPalette(c("chocolate4", "orange", "yellow", "grey", "green", "forestgreen", "darkgreen"))(100)
 
+# I tried also with these colours choice but was not so good
+cl <- colorRampPalette(c('darkblue', 'deepskyblue4', 'cyan3', 'pink', 'gold', 'white'))(100)
+cl <- colorRampPalette(c('darkblue', 'cyan3', 'pink', 'gold', 'white'))(100)
+
+
 plot(c.2014, col=NC, main="NDVI 2014")
 plot(c.2020, col=NC, main="NDVI 2020")
 
@@ -45,7 +50,7 @@ NDVIdif <- c.2020 - c.2014
 plot(NDVIdif, col=NC, main="Difference in NDVI between 2020 and 2014")
 
 
-#############
+############Top Of Canapy 
 
 #create the list of files stored in exam folder starting from a pattern "TOCR" using list.files function
 
@@ -61,30 +66,27 @@ rast_list
 r1999 <- rast_list[[1]]
 r2014 <- rast_list[[2]]
 
-#crop both files to see only Madagascar 
+#crop both files to see only Madagascar establishing the extention 
 
 ext <- extent(41, 52, -28, -10)
 c1999 <- crop(r1999, ext)
 c2014 <- crop(r2014, ext)
 
 
-cl <- colorRampPalette(c('darkblue', 'deepskyblue4', 'cyan3', 'pink', 'gold', 'white'))(100)
-cl <- colorRampPalette(c('darkblue', 'cyan3', 'pink', 'gold', 'white'))(100)
-
-
-#create a stack
+#create a stack file 
 sTOC <- stack(c2014, c1999)
 plot(sTOC, col=NC)
+NC <- colorRampPalette(c("chocolate4", "orange", "yellow", "grey", "green", "forestgreen", "darkgreen"))(100)
 
 #histogram
 hist(sTOC, col="limegreen", xlab="TOC change", main="TOC histogram")
 
-#boxplot
-boxplot(sTOC, vertical=T, axes=T, outline=F, col="limegreen", ylab="NDVI", xlab="Year", main="TOC")
 
 #calculating Difference of TOC from stack differencing two images of energy in two different times
 
 diff <- sTOC$Normalized.Top.Of.Canopy.Reflectance.in.Blue.band.1 - sTOC$Normalized.Top.Of.Canopy.Reflectance.in.Blue.band.2
+
+#changing the palette and using HEX codes and plotting
 CLF2 <- colorRampPalette(c("#B2182B","#D6604D","#F4A582","#FDDBC7","#D1E5F0","#92C5DE","#4393C3","#2166AC"))(100)
 
 plot(diff, col=CLF2, main="Difference in TOC between 2014 and 1999")
@@ -92,12 +94,8 @@ plot(diff, col=CLF2, main="Difference in TOC between 2014 and 1999")
 #histogram
 hist(diff, col="limegreen", xlab="TOC distribution", main="TOC histogram")
 
-#par with histogram and boxplot
-par(mfrow=c(1,2))
-hist(diff, col="limegreen", xlab="TOC distribution", main="TOC histogram"
-boxplot(sTOC, vertical=T, axes=T, outline=F, col="limegreen", ylab="NDVI", xlab="Year", main="TOC")
 
-############################################################
+############Leaf Area Index
 
 #I want to deepen the analysis using LAI1km data. 
 #make a list of the data 
@@ -136,19 +134,18 @@ ggtitle("LAI 2019")
 grid.arrange(p1, p2, nrow=1)
 
 
-
 #hist function to see more in detail trough a division of LAI in classes 
 
 hist(lai1999, col="limegreen", xlab="LAI change", main= "LAI 1999")
 hist(lai2019, col="limegreen", xlab="LAI change", main= "LAI 2019")
 
-#build a multiframe 
+#build a multiframe using the par function
 
 par(mfrow=c(1,2))
 hist(lai1999, col="limegreen", xlab="LAI", main= "LAI 1999")
 hist(lai2019, col="limegreen", xlab="LAI", main= "LAI 2019")
 
-#from hist to boxplot, different way to see the distribution
+#from histogram to boxplot, different way to see the distribution
 LAI <- stack(lai1999, lai2019)
 boxplot(LAI, vertical=T, axes=T, outline=F, col="limegreen", ylab="LAI", xlab="Year", main="LAI Boxplot")
 
