@@ -14,7 +14,7 @@ library(gridExtra) #for grid.arrange plotting, creating a multiframe
 setwd("C:/Users/franc/Desktop/lab/exam")
 
 
-#NDVI 
+#NDVI : I used data from Copernicus "c_gls_NDVI300_202005210000_GLOBE_PROBAV_V1.0.1.nc" and "c_gls_NDVI300_201405010000_GLOBE_PROBAV_V1.0.1.nc"
 # create the list of files stored in exam folder starting from a pattern "NDVI300" using list.files function
 
 list.NDVI <- list.files(pattern="NDVI300")
@@ -51,7 +51,7 @@ plot(NDVIdif, col=NC, main="Difference in NDVI between 2020 and 2014")
 
 
 ############Top Of Canapy 
-
+#data I used: "c_gls_TOCR_201405130000_GLOBE_VGT_V1.5.1.nc" and "c_gls_TOCR_199906130000_GLOBE_VGT_V1.5.1.nc"
 #create the list of files stored in exam folder starting from a pattern "TOCR" using list.files function
 
 import <- list.files(pattern="TOCR")
@@ -73,12 +73,12 @@ c1999 <- crop(r1999, ext)
 c2014 <- crop(r2014, ext)
 
 
-#create a stack file 
+#create a stack file in order to plot the raster files together 
 sTOC <- stack(c2014, c1999)
 plot(sTOC, col=NC)
 NC <- colorRampPalette(c("chocolate4", "orange", "yellow", "grey", "green", "forestgreen", "darkgreen"))(100)
 
-#histogram
+#histogram to better see the distribution
 hist(sTOC, col="limegreen", xlab="TOC change", main="TOC histogram")
 
 
