@@ -78,9 +78,6 @@ sTOC <- stack(c2014, c1999)
 plot(sTOC, col=NC)
 NC <- colorRampPalette(c("chocolate4", "orange", "yellow", "grey", "green", "forestgreen", "darkgreen"))(100)
 
-#histogram to better see the distribution
-hist(sTOC, col="limegreen", xlab="TOC change", main="TOC histogram")
-
 
 #calculating Difference of TOC from stack differencing two images of energy in two different times
 
