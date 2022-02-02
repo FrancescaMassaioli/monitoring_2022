@@ -97,7 +97,7 @@ hist(diff, col="limegreen", xlab="TOC distribution", main="TOC histogram")
 
 ############Leaf Area Index
 
-#I want to deepen the analysis using LAI1km data. 
+#I want to deepen the analysis using LAI1km data. : "c_gls_LAI-RT6_201905310000_GLOBE_PROBAV_V2.0.1.nc" and "c_gls_LAI_199905310000_GLOBE_VGT_V2.0.2.nc"
 #make a list of the data 
 
 rlist <- list.files(pattern="LAI")
